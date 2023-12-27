@@ -11,7 +11,11 @@
           .then((res) => res.json())
           .then((data) => {
             let rows = data["RealtimeCityAir"]["row"];
-            rows.forEach((e) => console.log(e));
+            rows.forEach((e) => {
+              let gu_name = e["MSRSTE_NM"];
+              let fine_dust = e["IDEX_NM"];
+              console.log(gu_name, fine_dust);
+            });
           });
       }
     </script>

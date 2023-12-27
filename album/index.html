@@ -117,12 +117,24 @@
         </div>`;
         $("#card").append(temp_html);
       }
+      $(document).ready(function () {
+        let url = "http://spartacodingclub.shop/sparta_api/seoulair";
+        fetch(url)
+          .then((res) => res.json())
+          .then((data) => {
+            let dust = data["RealtimeCityAir"]["row"][0]["IDEX_NM"];
+            console;
+            let temp_html = `현재 서울의 미세먼지 : ${dust}`;
+            $("#dust").text(temp_html);
+          });
+      });
     </script>
   </head>
 
   <body>
     <div class="mytitle">
       <h1>나만의 추억 앨범</h1>
+      <p id="dust">현재 서울의 미세먼지 :</p>
       <button onclick="openclose()">추억 저장하기</button>
     </div>
 
