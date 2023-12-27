@@ -84,6 +84,16 @@
         </div>`;
         $("#card").append(temp_html);
       }
+      $(document).ready(() => {
+        let url = "http://spartacodingclub.shop/sparta_api/weather/seoul";
+        fetch(url)
+          .then((res) => res.json())
+          .then((data) => {
+            let temp = data["temp"];
+            let temp_html = temp >= 20 ? `더워요` : `추워요`;
+            $("#weather").text(temp_html);
+          });
+      });
     </script>
   </head>
 
@@ -119,6 +129,11 @@
             <li><a href="#" class="nav-link px-2 text-white">영화</a></li>
             <li>
               <a href="#" class="nav-link px-2 text-white">내가 찜한 콘텐츠</a>
+            </li>
+            <li>
+              <a href="#" class="nav-link px-2 text-white"
+                >현재 서울의 날씨 : <span id="weather"></span>
+              </a>
             </li>
           </ul>
 
