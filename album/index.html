@@ -114,24 +114,39 @@
       const app = initializeApp(firebaseConfig);
       const db = getFirestore(app);
 
+      //  데이터베이스에 기록
       $("#postingbtn").click(async function () {
-        let doc = { name: "bob", age: 30 };
-        await addDoc(collection(db, "albums"), doc);
-      });
-      openclose = () => {
-        $("#postingbox").toggle();
-      };
-      function makeCard() {
         let img = $("#img").val();
         let title = $("#title").val();
         let date = $("#date").val();
         let content = $("#content").val();
-        console.log(title);
 
+        let doc = { img: img, title: title, date: date, content: content };
+        await addDoc(collection(db, "albums"), doc);
+
+        alert("저장 완료되었습니다.");
+        window.location.reload();
+      });
+
+      //  추억 저장하기 토글
+      $("#savebtn").click(async function () {
+        await $("#postingbox").toggle();
+      });
+
+      // 데이터베이스에서 데이터 불러온 후, reload된 화면에 카드 추가
+      let docs = await getDocs(collection(db, "albums"));
+      docs.forEach((doc) => {
+        let row = doc.data();
+
+        let img = row["img"];
+        let title = row["title"];
+        let date = row["date"];
+        let content = row["content"];
+        console.log(row);
         let temp_html = `<div class="col">
                       <div class="card h-100">
                         <img
-                          src="${img}"
+                          src=${img}
                           class="card-img-top"
                           alt="..."
                         />
@@ -145,18 +160,17 @@
                       </div>
                     </div>`;
         $("#card").append(temp_html);
-      }
-      $(document).ready(function () {
-        let url = "http://spartacodingclub.shop/sparta_api/seoulair";
-        fetch(url)
-          .then((res) => res.json())
-          .then((data) => {
-            let dust = data["RealtimeCityAir"]["row"][0]["IDEX_NM"];
-            console;
-            let temp_html = `현재 서울의 미세먼지 : ${dust}`;
-            $("#dust").text(temp_html);
-          });
       });
+
+      let url = "http://spartacodingclub.shop/sparta_api/seoulair";
+      fetch(url)
+        .then((res) => res.json())
+        .then((data) => {
+          let dust = data["RealtimeCityAir"]["row"][0]["IDEX_NM"];
+          console;
+          let temp_html = `현재 서울의 미세먼지 : ${dust}`;
+          $("#dust").text(temp_html);
+        });
     </script>
   </head>
 
@@ -164,10 +178,10 @@
     <div class="mytitle">
       <h1>나만의 추억 앨범</h1>
       <p id="dust">현재 서울의 미세먼지 :</p>
-      <button onclick="openclose()">추억 저장하기</button>
+      <button id="savebtn">추억 저장하기</button>
     </div>
 
-    <div class="mypostbox" id="postingbox">
+    <div class="mypostbox" id="postingbox" style="display: none">
       <div class="form-floating mb-3">
         <input
           id="img"
@@ -220,72 +234,7 @@
     </div>
 
     <div class="mycards">
-      <div id="card" class="row row-cols-1 row-cols-md-4 g-4">
-        <div class="col">
-          <div class="card h-100">
-            <img
-              src="https://images.unsplash.com/photo-1446768500601-ac47e5ec3719?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1446&q=80"
-              class="card-img-top"
-              alt="..."
-            />
-            <div class="card-body">
-              <h5 class="card-title">앨범 제목</h5>
-              <p class="card-text">앨범 내용</p>
-            </div>
-            <div class="card-footer">
-              <small class="text-muted">앨범 날짜</small>
-            </div>
-          </div>
-        </div>
-        <div class="col">
-          <div class="card h-100">
-            <img
-              src="https://images.unsplash.com/photo-1446768500601-ac47e5ec3719?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1446&q=80"
-              class="card-img-top"
-              alt="..."
-            />
-            <div class="card-body">
-              <h5 class="card-title">앨범 제목</h5>
-              <p class="card-text">앨범 내용</p>
-            </div>
-            <div class="card-footer">
-              <small class="text-muted">앨범 날짜</small>
-            </div>
-          </div>
-        </div>
-        <div class="col">
-          <div class="card h-100">
-            <img
-              src="https://images.unsplash.com/photo-1446768500601-ac47e5ec3719?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1446&q=80"
-              class="card-img-top"
-              alt="..."
-            />
-            <div class="card-body">
-              <h5 class="card-title">앨범 제목</h5>
-              <p class="card-text">앨범 내용</p>
-            </div>
-            <div class="card-footer">
-              <small class="text-muted">앨범 날짜</small>
-            </div>
-          </div>
-        </div>
-        <div class="col">
-          <div class="card h-100">
-            <img
-              src="https://images.unsplash.com/photo-1446768500601-ac47e5ec3719?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1446&q=80"
-              class="card-img-top"
-              alt="..."
-            />
-            <div class="card-body">
-              <h5 class="card-title">앨범 제목</h5>
-              <p class="card-text">앨범 내용</p>
-            </div>
-            <div class="card-footer">
-              <small class="text-muted">앨범 날짜</small>
-            </div>
-          </div>
-        </div>
-      </div>
+      <div id="card" class="row row-cols-1 row-cols-md-4 g-4"></div>
     </div>
   </body>
 </html>
