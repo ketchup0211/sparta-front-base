@@ -88,7 +88,36 @@
         margin-right: 10px;
       }
     </style>
-    <script>
+    <script type="module">
+      // Firebase SDK 라이브러리 가져오기
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+      import { getFirestore } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+      import {
+        collection,
+        addDoc,
+      } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+      import { getDocs } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+
+      // Firebase 구성 정보 설정
+      // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+      const firebaseConfig = {
+        apiKey: "AIzaSyCG9zhVl4WK4BiyYw_ZqHFQZ-uX8xKkVcg",
+        authDomain: "sparta-93e78.firebaseapp.com",
+        projectId: "sparta-93e78",
+        storageBucket: "sparta-93e78.appspot.com",
+        messagingSenderId: "85036915756",
+        appId: "1:85036915756:web:9ba5190321ad015025c589",
+        measurementId: "G-70T4RVHDDK",
+      };
+
+      // Firebase 인스턴스 초기화
+      const app = initializeApp(firebaseConfig);
+      const db = getFirestore(app);
+
+      $("#postingbtn").click(async function () {
+        let doc = {};
+        await addDoc(collection(db, "albums"), doc);
+      });
       openclose = () => {
         $("#postingbox").toggle();
       };
@@ -100,21 +129,21 @@
         console.log(title);
 
         let temp_html = `<div class="col">
-          <div class="card h-100">
-            <img
-              src="${img}"
-              class="card-img-top"
-              alt="..."
-            />
-            <div class="card-body">
-              <h5 class="card-title">${title}</h5>
-              <p class="card-text">${content}</p>
-            </div>
-            <div class="card-footer">
-              <small class="text-muted">${date}</small>
-            </div>
-          </div>
-        </div>`;
+                      <div class="card h-100">
+                        <img
+                          src="${img}"
+                          class="card-img-top"
+                          alt="..."
+                        />
+                        <div class="card-body">
+                          <h5 class="card-title">${title}</h5>
+                          <p class="card-text">${content}</p>
+                        </div>
+                        <div class="card-footer">
+                          <small class="text-muted">${date}</small>
+                        </div>
+                      </div>
+                    </div>`;
         $("#card").append(temp_html);
       }
       $(document).ready(function () {
@@ -183,7 +212,7 @@
       </div>
 
       <div class="mybtn">
-        <button onclick="makeCard()" type="button" class="btn btn-primary">
+        <button id="postingbtn" type="button" class="btn btn-primary">
           기록하기
         </button>
         <button type="button" class="btn btn-outline-primary">닫기</button>
