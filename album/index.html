@@ -115,7 +115,7 @@
       const db = getFirestore(app);
 
       $("#postingbtn").click(async function () {
-        let doc = {};
+        let doc = { name: "bob", age: 30 };
         await addDoc(collection(db, "albums"), doc);
       });
       openclose = () => {
