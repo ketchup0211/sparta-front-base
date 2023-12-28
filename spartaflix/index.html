@@ -58,20 +58,62 @@
         width: 100%;
       }
     </style>
-    <script>
-      openclose = () => {
-        $("#postbox").toggle();
+    <script type="module">
+      // Firebase SDK 라이브러리 가져오기
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+      import { getFirestore } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+      import {
+        collection,
+        addDoc,
+      } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+      import { getDocs } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+
+      // Firebase 구성 정보 설정
+      // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+      const firebaseConfig = {
+        apiKey: "AIzaSyCG9zhVl4WK4BiyYw_ZqHFQZ-uX8xKkVcg",
+        authDomain: "sparta-93e78.firebaseapp.com",
+        projectId: "sparta-93e78",
+        storageBucket: "sparta-93e78.appspot.com",
+        messagingSenderId: "85036915756",
+        appId: "1:85036915756:web:9ba5190321ad015025c589",
+        measurementId: "G-70T4RVHDDK",
       };
-      function makeCard() {
+
+      // Firebase 인스턴스 초기화
+      const app = initializeApp(firebaseConfig);
+      const db = getFirestore(app);
+
+      $("#movie_record").click(async function () {
+        await $("#postbox").toggle();
+      });
+
+      $("#postingbtn").click(async function () {
         let img = $("#img").val();
         let title = $("#title").val();
         let star = $("#star").val();
         let comment = $("#comment").val();
 
+        let doc = { img: img, title: title, star: star, comment: comment };
+        await addDoc(collection(db, "movies"), doc);
+
+        alert("저장 완료되었습니다.");
+        window.location.reload();
+      });
+
+      let docs = await getDocs(collection(db, "movies"));
+      docs.forEach((doc) => {
+        let row = doc.data();
+
+        let img = row["img"];
+        let title = row["title"];
+        let star = row["star"];
+        let comment = row["comment"];
+        console.log(row);
         let temp_html = `<div class="col">
           <div class="card h-100">
             <img
-              src="${img}"
+              src=${img}
               class="card-img-top"
               alt="..."
             />
@@ -83,17 +125,16 @@
           </div>
         </div>`;
         $("#card").append(temp_html);
-      }
-      $(document).ready(() => {
-        let url = "http://spartacodingclub.shop/sparta_api/weather/seoul";
-        fetch(url)
-          .then((res) => res.json())
-          .then((data) => {
-            let temp = data["temp"];
-            let temp_html = temp >= 20 ? `더워요` : `추워요`;
-            $("#weather").text(temp_html);
-          });
       });
+
+      let url = "http://spartacodingclub.shop/sparta_api/weather/seoul";
+      fetch(url)
+        .then((res) => res.json())
+        .then((data) => {
+          let temp = data["temp"];
+          let temp_html = temp >= 20 ? `더워요` : `추워요`;
+          $("#weather").text(temp_html);
+        });
     </script>
   </head>
 
@@ -164,11 +205,7 @@
             역병에 신음하는 산하. 정체 모를 악에 맞서 백성을 구원할 희망은 오직
             세자뿐이다.
           </p>
-          <button
-            onclick="openclose()"
-            type="button"
-            class="btn btn-outline-light"
-          >
+          <button id="movie_record" type="button" class="btn btn-outline-light">
             영화 기록하기
           </button>
           <button type="button" class="btn btn-outline-light">상세정보</button>
@@ -218,7 +255,7 @@
         />
         <label for="floatingInput">추천 이유</label>
       </div>
-      <button onclick="makeCard()" type="button" class="btn btn-danger">
+      <button id="postingbtn" type="button" class="btn btn-danger">
         기록하기
       </button>
     </div>
